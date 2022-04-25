@@ -92,6 +92,9 @@ struct RawCameraControl : public RawBuffer {
                                         */
         WB_COLOR_TEMP = 49,            /* [1] value
                                         */
+        EXTERNAL_TRIGGER = 50,
+        AF_LENS_RANGE = 51,
+        FRAME_SYNC = 52,
     };
 
     enum class AutoFocusMode : uint8_t {
@@ -173,6 +176,13 @@ struct RawCameraControl : public RawBuffer {
         AQUA,
     };
 
+    enum class FrameSyncMode : uint8_t {
+        OFF = 0,
+        OUTPUT,
+        INPUT,
+        // TODO soft sync modes?
+    };
+
     struct ManualExposureParams {
         uint32_t exposureTimeUs;
         uint32_t sensitivityIso;
@@ -205,6 +215,7 @@ struct RawCameraControl : public RawBuffer {
      * - lower values lead to out-of-focus (lens too close to the sensor array)
      */
     uint8_t lensPosition = 0;
+    uint8_t lensPosAutoInfinity, lensPosAutoMacro;
 
     ManualExposureParams expManual;
     RegionParams aeRegion, afRegion;
@@ -212,6 +223,7 @@ struct RawCameraControl : public RawBuffer {
     SceneMode sceneMode;
     AntiBandingMode antiBandingMode;
     EffectMode effectMode;
+    FrameSyncMode frameSyncMode;
     bool aeLockMode;
     bool awbLockMode;
     int8_t expCompensation;  //  -9 ..  9
@@ -222,6 +234,8 @@ struct RawCameraControl : public RawBuffer {
     uint8_t lumaDenoise;     //   0 ..  4
     uint8_t chromaDenoise;   //   0 ..  4
     uint16_t wbColorTemp;    // 1000 .. 12000
+    uint8_t lowPowerNumFramesBurst;
+    uint8_t lowPowerNumFramesDiscard;
 
     void setCommand(Command cmd, bool value = true) {
         uint64_t mask = 1ull << (uint8_t)cmd;
@@ -247,6 +261,8 @@ struct RawCameraControl : public RawBuffer {
                       cmdMask,
                       autoFocusMode,
                       lensPosition,
+                      lensPosAutoInfinity,
+                      lensPosAutoMacro,
                       expManual,
                       aeRegion,
                       afRegion,
@@ -256,6 +272,7 @@ struct RawCameraControl : public RawBuffer {
                       aeLockMode,
                       awbLockMode,
                       effectMode,
+                      frameSyncMode,
                       expCompensation,
                       brightness,
                       contrast,
@@ -263,7 +280,9 @@ struct RawCameraControl : public RawBuffer {
                       sharpness,
                       lumaDenoise,
                       chromaDenoise,
-                      wbColorTemp);
+                      wbColorTemp,
+                      lowPowerNumFramesBurst,
+                      lowPowerNumFramesDiscard);
 };
 
 }  // namespace dai
