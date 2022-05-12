@@ -11,14 +11,8 @@
 #include <nop/utility/buffer_reader.h>
 #include <nop/utility/stream_writer.h>
 
-#include <nlohmann/json.hpp>
-
-// Check version of nlohmann json
-#if(defined(NLOHMANN_JSON_VERSION_MAJOR) && defined(NLOHMANN_JSON_VERSION_MINOR))
-    #if((NLOHMANN_JSON_VERSION_MAJOR < 3) || ((NLOHMANN_JSON_VERSION_MAJOR == 3) && (NLOHMANN_JSON_VERSION_MINOR < 9)))
-static_assert(0, "DepthAI requires nlohmann library version 3.9.0 or higher");
-    #endif
-#endif
+// project
+#include "NlohmannJsonCompat.hpp"
 
 // To not require exceptions for embedded usecases.
 #ifndef __has_feature           // Optional of course.
@@ -248,17 +242,17 @@ inline bool deserialize(const std::vector<std::uint8_t>& data, T& obj) {
     if(nlohmann_json_j.contains(#v1)) nlohmann_json_j[#v1].get_to(nlohmann_json_t.v1);
 #define DEPTHAI_NLOHMANN_DEFINE_TYPE_OPTIONAL_NON_INTRUSIVE(Type, ...)                              \
     inline void to_json(nlohmann::json& nlohmann_json_j, const Type& nlohmann_json_t) {             \
-        NLOHMANN_JSON_EXPAND(NLOHMANN_JSON_PASTE(DEPTHAI_NLOHMANN_JSON_OPTIONAL_TO, __VA_ARGS__))   \
+        DEPTHAI_NLOHMANN_JSON_EXPAND(DEPTHAI_NLOHMANN_JSON_PASTE(DEPTHAI_NLOHMANN_JSON_OPTIONAL_TO, __VA_ARGS__))   \
     }                                                                                               \
     inline void from_json(const nlohmann::json& nlohmann_json_j, Type& nlohmann_json_t) {           \
-        NLOHMANN_JSON_EXPAND(NLOHMANN_JSON_PASTE(DEPTHAI_NLOHMANN_JSON_OPTIONAL_FROM, __VA_ARGS__)) \
+        DEPTHAI_NLOHMANN_JSON_EXPAND(DEPTHAI_NLOHMANN_JSON_PASTE(DEPTHAI_NLOHMANN_JSON_OPTIONAL_FROM, __VA_ARGS__)) \
     }
 #define DEPTHAI_NLOHMANN_DEFINE_TYPE_OPTIONAL_INTRUSIVE(Type, ...)                                  \
     friend void to_json(nlohmann::json& nlohmann_json_j, const Type& nlohmann_json_t) {             \
-        NLOHMANN_JSON_EXPAND(NLOHMANN_JSON_PASTE(DEPTHAI_NLOHMANN_JSON_OPTIONAL_TO, __VA_ARGS__))   \
+        DEPTHAI_NLOHMANN_JSON_EXPAND(DEPTHAI_NLOHMANN_JSON_PASTE(DEPTHAI_NLOHMANN_JSON_OPTIONAL_TO, __VA_ARGS__))   \
     }                                                                                               \
     friend void from_json(const nlohmann::json& nlohmann_json_j, Type& nlohmann_json_t) {           \
-        NLOHMANN_JSON_EXPAND(NLOHMANN_JSON_PASTE(DEPTHAI_NLOHMANN_JSON_OPTIONAL_FROM, __VA_ARGS__)) \
+        DEPTHAI_NLOHMANN_JSON_EXPAND(DEPTHAI_NLOHMANN_JSON_PASTE(DEPTHAI_NLOHMANN_JSON_OPTIONAL_FROM, __VA_ARGS__)) \
     }
 
 // Macros
@@ -270,10 +264,10 @@ inline bool deserialize(const std::vector<std::uint8_t>& data, T& obj) {
     DEPTHAI_DEFERRED_EXPAND(DEPTHAI_NLOHMANN_DEFINE_TYPE_OPTIONAL_INTRUSIVE(__VA_ARGS__)) \
     DEPTHAI_DEFERRED_EXPAND(NOP_EXTERNAL_STRUCTURE(__VA_ARGS__))
 
-#define DEPTHAI_SERIALIZE_EXT(...)                                           \
-    DEPTHAI_DEFERRED_EXPAND(NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(__VA_ARGS__)) \
+#define DEPTHAI_SERIALIZE_EXT(...)                                                   \
+    DEPTHAI_DEFERRED_EXPAND(DEPTHAI_NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(__VA_ARGS__)) \
     DEPTHAI_DEFERRED_EXPAND(NOP_EXTERNAL_STRUCTURE(__VA_ARGS__))
 
-#define DEPTHAI_SERIALIZE(...)                                           \
-    DEPTHAI_DEFERRED_EXPAND(NLOHMANN_DEFINE_TYPE_INTRUSIVE(__VA_ARGS__)) \
+#define DEPTHAI_SERIALIZE(...)                                                   \
+    DEPTHAI_DEFERRED_EXPAND(DEPTHAI_NLOHMANN_DEFINE_TYPE_INTRUSIVE(__VA_ARGS__)) \
     DEPTHAI_DEFERRED_EXPAND(NOP_STRUCTURE(__VA_ARGS__))
