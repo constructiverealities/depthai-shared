@@ -6,7 +6,6 @@
 #include <vector>
 
 namespace dai {
-
 const std::unordered_map<DatatypeEnum, std::vector<DatatypeEnum>> hierarchy = {
     {DatatypeEnum::Buffer,
      {
@@ -27,6 +26,7 @@ const std::unordered_map<DatatypeEnum, std::vector<DatatypeEnum>> hierarchy = {
          DatatypeEnum::TrackedFeatures,
          DatatypeEnum::AprilTagConfig,
          DatatypeEnum::AprilTags,
+         DatatypeEnum::ToFConfig,	 
      }},
     {DatatypeEnum::ImgFrame, {}},
     {DatatypeEnum::NNData, {}},
