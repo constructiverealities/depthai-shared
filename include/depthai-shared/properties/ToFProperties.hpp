@@ -10,9 +10,9 @@ namespace dai {
  */
 struct ToFProperties : PropertiesSerializable<Properties, ToFProperties> {
   RawToFConfig initialConfig;
-  int64_t filter_code;
+  std::vector<uint8_t> filter_config;
 };
 
-  DEPTHAI_SERIALIZE_EXT(ToFProperties, initialConfig, filter_code);
+  DEPTHAI_SERIALIZE_EXT(ToFProperties, initialConfig, filter_config);
 
 }  // namespace dai
