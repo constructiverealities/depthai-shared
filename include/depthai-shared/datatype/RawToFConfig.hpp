@@ -20,6 +20,8 @@ struct RawToFConfig : public RawBuffer {
 
   float maxAsymmetry;
 
+  bool useLoadedFilter;
+  
     void serialize(std::vector<std::uint8_t>& metadata, DatatypeEnum& datatype) const override {
         metadata = utility::serialize(*this);
         datatype = DatatypeEnum::ToFConfig;
@@ -27,7 +29,7 @@ struct RawToFConfig : public RawBuffer {
 
   DEPTHAI_SERIALIZE(RawToFConfig, minAmplitude, maxError, minDistance, maxDistance,
 		      minAlbedo, maxAlbedo, albedoCutoffAmplitude,
-		      maxAsymmetry);
+		    maxAsymmetry, useLoadedFilter);
 };
 
 }  // namespace dai
