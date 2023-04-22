@@ -11,8 +11,9 @@ namespace dai {
 struct ToFProperties : PropertiesSerializable<Properties, ToFProperties> {
   RawToFConfig initialConfig;
   std::vector<uint8_t> filter_config;
+  std::vector<uint8_t> tof_calibration;    
 };
 
-  DEPTHAI_SERIALIZE_EXT(ToFProperties, initialConfig, filter_config);
+  DEPTHAI_SERIALIZE_EXT(ToFProperties, initialConfig, filter_config, tof_calibration);
 
 }  // namespace dai
